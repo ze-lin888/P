@@ -1,10 +1,9 @@
 from kivy.app import App
-from kivy.uix.button import Button
+from kivy.uix.label import Label
 
-class MainApp(App):
+class TestApp(App):
     def build(self):
-        # 这是一个简单的按钮，点击它会显示“Hello”
-        return Button(text='Hello! This is my Private Player')
+        return Label(text='Hello! Success!')
 
 if __name__ == '__main__':
-    MainApp().run()
+    TestApp().run()
