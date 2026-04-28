@@ -14,7 +14,6 @@ android.ndk = 23c
 android.private_storage = True
 android.archs = arm64-v8a
 p4a.branch = master
-
 [buildozer]
 log_level = 2
 warn_on_root = 1
