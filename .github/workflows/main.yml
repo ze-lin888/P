@@ -5,21 +5,18 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: absolute_environment_setup
+      - name: absolute_master_build
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo apt-get update
           sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev openjdk-17-jdk
-          pip install --upgrade pip
-          pip install "cython<3.0.0" wheel "buildozer==1.5.0"
-      - name: force_master_build
-        run: |
-          export PATH=$PATH:/home/runner/.local/bin
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "cython<3.0.0" wheel "buildozer==1.5.0"
+          export PATH=$PATH:$(python3 -m site --user-base)/bin
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
           export _JAVA_OPTIONS="-Xmx4G"
           export CFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration -Wno-int-conversion"
-          # 核心：直接定位本地库执行，绝不给系统“找不到”的机会
-          /home/runner/.local/bin/buildozer -v android debug
+          python3 -m buildozer -v android debug
       - name: artifact_delivery
         uses: actions/upload-artifact@v4
         with:
