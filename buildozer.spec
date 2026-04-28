@@ -8,9 +8,9 @@ version = 0.1
 requirements = python3,kivy,sqlite3,requests
 orientation = portrait
 android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
-android.api = 33
+android.api = 31
 android.minapi = 21
-android.ndk = 25c
+android.ndk = 25b
 android.private_storage = True
 android.archs = arm64-v8a
 
