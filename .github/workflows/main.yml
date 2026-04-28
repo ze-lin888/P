@@ -1,35 +1,26 @@
 name: Build APK
 on: [push, pull_request]
-
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          # 将这里统一为 3.11，与 Buildozer 默认行为一致
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev
           pip install --upgrade pip
-          # 锁定 Cython 版本，避免 3.0+ 带来的兼容性问题
           pip install "cython<3.0.0" buildozer kivy==2.3.0
-
       - name: Build with Buildozer
         env:
           APP_ANDROID_ACCEPT_SDK_LICENSE: 1
         run: |
-          # 强制清理之前的残余编译，防止 path 冲突
-          buildozer android clean
-          # 使用 -v 详细模式，确保我们能看到最后的打包错误
+          rm -rf .buildozer
           buildozer -v android debug
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
