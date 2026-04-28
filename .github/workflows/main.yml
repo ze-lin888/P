@@ -12,16 +12,18 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev
+          sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev openjdk-17-jdk
           pip install --upgrade pip
-          pip install "cython<3.0.0" wheel
-          pip install "buildozer>=1.5.0" "kivy>=2.3.0"
+          pip install "cython<3.0.0" wheel "buildozer==1.5.0" "kivy>=2.3.0"
       - name: Build with Buildozer
         env:
           APP_ANDROID_ACCEPT_SDK_LICENSE: 1
+          _JAVA_OPTIONS: "-Xmx2g"
+          CFLAGS: "-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
+          CPPFLAGS: "-Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
+          LDFLAGS: "-Wl,--no-fatal-warnings"
         run: |
           rm -rf .buildozer/
-          rm -rf ~/.buildozer/
           buildozer -v android debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
