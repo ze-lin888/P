@@ -17,9 +17,8 @@ jobs:
           pip install "cython<3.0.0" wheel "buildozer==1.5.0"
       - name: build with buildozer
         run: |
-          rm -rf .buildozer/
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
-          export _JAVA_OPTIONS="-Xmx4g"
+          export _JAVA_OPTIONS="-Xmx4G"
           export CFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
           export CPPFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
           export CXXFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
