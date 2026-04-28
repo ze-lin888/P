@@ -5,25 +5,38 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: set up python
+
+      - name: Maximize Build Space
+        # 权威操作：清理虚拟机预置的干扰 SDK，为 NDK 编译腾出物理内存和 Swap 空间
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: install dependencies
+
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev openjdk-17-jdk
           pip install --upgrade pip
           pip install "cython<3.0.0" wheel "buildozer==1.5.0"
-      - name: build with buildozer
+
+      - name: Build with Buildozer
         run: |
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
-          export _JAVA_OPTIONS="-Xmx4G"
-          export CFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
-          export CPPFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
-          export CXXFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
+          # 权威配额：严格限制 Java 内存，防止 Gradle 进程膨胀导致 11 分钟崩溃
+          export _JAVA_OPTIONS="-Xmx2G -Xms512M"
+          # 核心补丁：处理现代编译器对旧 C 代码的严格检查
+          export CFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration -Wno-int-conversion"
           buildozer -v android debug
-      - name: upload apk
+        
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: package
