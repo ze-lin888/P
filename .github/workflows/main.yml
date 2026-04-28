@@ -9,21 +9,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: install_system_dependencies
+      - name: install_dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev openjdk-17-jdk
           python3 -m pip install --upgrade pip
           python3 -m pip install "cython<3.0.0" wheel "buildozer==1.5.0"
           echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
-      - name: execute_android_build
+      - name: build_apk
         run: |
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
           export _JAVA_OPTIONS="-Xmx4G"
-          export LD_LIBRARY_PATH=$PYTHON_PATH/lib:$LD_LIBRARY_PATH
           export CFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration -Wno-int-conversion"
           buildozer -v android debug
-      - name: upload_artifact
+      - name: upload_apk
         uses: actions/upload-artifact@v4
         with:
           name: package
