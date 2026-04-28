@@ -1,21 +1,21 @@
-name: Build APK
+name: build
 on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
+      - name: set up python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Install dependencies
+      - name: install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev openjdk-17-jdk
           pip install --upgrade pip
-          pip install "cython<3.0.0" wheel "buildozer==1.5.0" "kivy>=2.3.0"
-      - name: Build with Buildozer
+          pip install "cython<3.0.0" wheel "buildozer==1.5.0"
+      - name: build with buildozer
         run: |
           rm -rf .buildozer/
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
@@ -24,7 +24,7 @@ jobs:
           export CPPFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
           export CXXFLAGS="-O2 -Wno-implicit-function-declaration -Wno-error=implicit-function-declaration"
           buildozer -v android debug
-      - name: Upload APK
+      - name: upload apk
         uses: actions/upload-artifact@v4
         with:
           name: package
